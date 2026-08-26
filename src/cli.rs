@@ -3,11 +3,19 @@ use crate::task::{Priority, Status};
 use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser, Debug)]
-#[command(name = "tasktrack")]
+#[command(name = "tracker")]
 #[command(about = "A simple task manager CLI", long_about = None)]
 pub struct Cli {
     #[command(subcommand)]
-    pub command: Commands,
+    pub command: Option<Commands>,
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum DaemonAction {
+    /// Start the daemon (default)
+    Start,
+    /// Stop the running background daemon
+    Stop,
 }
 
 #[derive(Subcommand, Debug)]
@@ -50,6 +58,11 @@ pub enum Commands {
         /// The ID of the task
         id: u32,
     },
+    /// Mark a task as passed
+    Passed {
+        /// The ID of the task
+        id: u32,
+    },
     /// Remove a task
     Rm {
         /// The ID of the task
@@ -74,6 +87,34 @@ pub enum Commands {
     },
     /// Launch the interactive TUI
     Tui,
+    /// Launch the interactive shell
+    Shell,
+    /// Start or stop the background notification monitor
+    Daemon {
+        #[command(subcommand)]
+        action: Option<DaemonAction>,
+
+        /// Run in background (internal use)
+        #[arg(long, hide = true)]
+        background: bool,
+    },
+    /// Manage the background service
+    Service {
+        #[command(subcommand)]
+        action: ServiceAction,
+    },
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum ServiceAction {
+    /// Install the service to start automatically on boot
+    Install,
+    /// Remove the service from the system
+    Uninstall,
+    /// Start the background service
+    Start,
+    /// Stop the background service
+    Stop,
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -81,6 +122,7 @@ pub enum CliStatus {
     Todo,
     InProgress,
     Done,
+    Passed,
 }
 
 impl From<CliStatus> for Status {
@@ -89,6 +131,7 @@ impl From<CliStatus> for Status {
             CliStatus::Todo => Status::Todo,
             CliStatus::InProgress => Status::InProgress,
             CliStatus::Done => Status::Done,
+            CliStatus ::Passed => Status::Passed,
         }
     }
 }

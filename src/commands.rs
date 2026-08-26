@@ -4,6 +4,9 @@ use crate::task::{Priority, Status, Task};
 use crate::notification;
 use chrono::{DateTime, Utc};
 
+
+//---------FUCNTIONS FOR ADD TASKS-------------
+
 pub fn add_task(
     store: &mut Store,
     title: String,
@@ -18,6 +21,8 @@ pub fn add_task(
     Ok(id)
 }
 
+
+//---------FUCNTIONS FOR LIST TASKS-------------
 pub fn list_tasks(
     store: &Store,
     status: Option<Status>,
@@ -27,6 +32,9 @@ pub fn list_tasks(
     store.list_tasks(status, priority, sort)
 }
 
+
+
+//---------FUCNTIONS FOR COMPLETE TASKS-------------
 pub fn complete_task(store: &mut Store, id: u32) -> Result<(), AppError> {
     let task = store.get_task_mut(id).ok_or(AppError::NotFound(id))?;
     task.complete();
@@ -36,6 +44,8 @@ pub fn complete_task(store: &mut Store, id: u32) -> Result<(), AppError> {
     Ok(())
 }
 
+
+//---------FUCNTIONS FOR REOPEN TASKS-------------
 pub fn reopen_task(store: &mut Store, id: u32) -> Result<(), AppError> {
     let task = store.get_task_mut(id).ok_or(AppError::NotFound(id))?;
     task.reopen();
@@ -45,6 +55,8 @@ pub fn reopen_task(store: &mut Store, id: u32) -> Result<(), AppError> {
     Ok(())
 }
 
+
+//---------FUCNTIONS FOR START TASKS-------------
 pub fn start_task(store: &mut Store, id: u32) -> Result<(), AppError> {
     let task = store.get_task_mut(id).ok_or(AppError::NotFound(id))?;
     task.start();
@@ -54,6 +66,19 @@ pub fn start_task(store: &mut Store, id: u32) -> Result<(), AppError> {
     Ok(())
 }
 
+
+//---------FUCNTIONS FOR PASSED TASKS-------------
+pub fn passed_task(store: &mut Store, id: u32) -> Result<(), AppError> {
+    let task = store.get_task_mut(id).ok_or(AppError::NotFound(id))?;
+    task.passed();
+    let title = task.title.clone();
+    store.save()?;
+    notification::notify("Task Passed", &format!("Task: {}", title));
+    Ok(())
+}
+
+
+//--------FUCNTIONS FOR REMOVE TASKS-------------
 pub fn remove_task(store: &mut Store, id: u32) -> Result<(), AppError> {
     let task = store.get_task(id).ok_or(AppError::NotFound(id))?;
     let title = task.title.clone();
@@ -63,6 +88,8 @@ pub fn remove_task(store: &mut Store, id: u32) -> Result<(), AppError> {
     Ok(())
 }
 
+
+//--------FUCNTIONS FOR EDIT TASKS-------------
 pub fn edit_task(
     store: &mut Store,
     id: u32,

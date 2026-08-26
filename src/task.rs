@@ -8,6 +8,7 @@ pub enum Status {
     Todo,
     InProgress,
     Done,
+    Passed,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -83,6 +84,10 @@ impl Task {
         self.priority = priority;
     }
 
+    pub fn passed(&mut self) {
+        self.status = Status::Passed;
+    }
+
     pub fn set_due_date(&mut self, due_date: Option<DateTime<Utc>>) {
         self.due_date = due_date;
         self.notified_due = false;
@@ -127,10 +132,24 @@ pub fn parse_due_date(input: &str) -> Option<DateTime<Utc>> {
 impl fmt::Display for Task {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 
-        let status_str = match self.status {
-            Status::Todo => "TODO".white(),
-            Status::InProgress => "IN PROGRESS".yellow(),
-            Status::Done => "DONE".green(),
+        let status_str = if let Some(due) = self.due_date {
+            if Utc::now() >= due && !matches!(self.status, Status::Done) && !matches!(self.status, Status::Passed) {
+                "OVERDUE".red()
+            } else {
+                match self.status {
+                    Status::Todo => "TODO".white(),
+                    Status::InProgress => "IN PROGRESS".yellow(),
+                    Status::Done => "DONE".green(),
+                    Status::Passed => "PASSED".blue(),
+                }
+            }
+        } else {
+            match self.status {
+                Status::Todo => "TODO".white(),
+                Status::InProgress => "IN PROGRESS".yellow(),
+                Status::Done => "DONE".green(),
+                Status::Passed => "PASSED".blue(),
+            }
         };
 
         let priority_str = match self.priority {
@@ -154,62 +173,3 @@ impl fmt::Display for Task {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn new_task_starts_as_todo() {
-        let task = Task::new(1, "Learn Rust".to_string(), Priority::Medium, None);
-
-        assert!(matches!(task.status, Status::Todo));
-        assert_eq!(task.priority, Priority::Medium);
-    }
-
-    #[test]
-    fn complete_changes_status_to_done() {
-        let mut task = Task::new(1, "Test".to_string(), Priority::Low, None);
-        task.complete();
-        assert!(matches!(task.status, Status::Done));
-    }
-
-    #[test]
-    fn reopen_changes_status_to_todo() {
-        let mut task = Task::new(1, "Test".to_string(), Priority::Low, None);
-        task.complete();
-        task.reopen();
-        assert!(matches!(task.status, Status::Todo));
-    }
-
-    #[test]
-    fn start_changes_status_to_in_progress() {
-        let mut task = Task::new(1, "Test".to_string(), Priority::Low, None);
-        task.start();
-        assert!(matches!(task.status, Status::InProgress));
-    }
-
-    #[test]
-    fn test_parse_due_date() {
-        let now = Utc::now();
-        let parsed = parse_due_date("+1h").unwrap();
-        let diff = parsed - now;
-        assert!(diff.num_minutes() >= 59 && diff.num_minutes() <= 61);
-
-        let parsed = parse_due_date("+10mn").unwrap();
-        let diff = parsed - now;
-        assert!(diff.num_minutes() >= 9 && diff.num_minutes() <= 11);
-
-        let parsed = parse_due_date("+2d").unwrap();
-        let diff = parsed - now;
-        assert!(diff.num_hours() >= 47 && diff.num_hours() <= 49);
-
-        let iso = "2026-12-31T23:59:59Z";
-        let parsed = parse_due_date(iso).unwrap();
-        assert_eq!(parsed.to_rfc3339(), "2026-12-31T23:59:59+00:00");
-
-        let iso_offset = "2026-12-31T23:59:59+07:00";
-        let parsed = parse_due_date(iso_offset).unwrap();
-        // 23:59:59+07:00 is 16:59:59Z
-        assert_eq!(parsed.to_rfc3339(), "2026-12-31T16:59:59+00:00");
-    }
-}

@@ -1,0 +1,35 @@
+[2m2026-08-26T06:35:25.156926Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T06:36:35.166303Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Task 'Test Notification' is overdue, marking as passed
+[2m2026-08-26T06:36:35.166369Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Notifying: Task 'Test Notification' is due
+[2m2026-08-26T06:58:29.582434Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T06:58:29.582845Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Task 'test' is overdue, marking as passed
+[2m2026-08-26T06:58:29.582875Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Notifying: Task 'test' is due
+[2m2026-08-26T06:59:38.124379Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T07:00:23.129008Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Notifying (30s): Task 'test' is due very soon
+[2m2026-08-26T07:00:53.159443Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Task 'test' is overdue, marking as passed
+[2m2026-08-26T07:00:53.159458Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Notifying: Task 'test' is due
+[2m2026-08-26T07:01:48.418692Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T07:02:25.823899Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T07:03:00.096733Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T07:03:23.341610Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T07:04:23.460005Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T07:05:03.467632Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Notifying (30s): Task 'test' is due very soon
+[2m2026-08-26T07:05:33.495004Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Task 'test' is overdue, marking as passed
+[2m2026-08-26T07:05:33.495027Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Notifying: Task 'test' is due
+[2m2026-08-26T07:06:28.605625Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T07:08:58.428337Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T07:16:07.368459Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T07:16:47.378624Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Notifying (30s): Task 'test' is due very soon
+[2m2026-08-26T07:17:17.406456Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Task 'test' is overdue, marking as passed
+[2m2026-08-26T07:17:17.406469Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Notifying: Task 'test' is due
+[2m2026-08-26T08:09:51.608682Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T08:10:02.623354Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T08:17:49.040115Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T08:19:12.767680Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T08:19:32.727371Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T08:19:49.904182Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T08:36:09.251353Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T08:37:09.261140Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Notifying (30s): Task 'test' is due very soon
+[2m2026-08-26T08:37:34.390955Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Daemon started
+[2m2026-08-26T08:37:39.288725Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Task 'test' is overdue, marking as passed
+[2m2026-08-26T08:37:39.288755Z[0m [32m INFO[0m [2mtracker::daemon[0m[2m:[0m Notifying: Task 'test' is due

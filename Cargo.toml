@@ -1,7 +1,18 @@
 [package]
-name = "tasktrack"
+name = "tracker"
 version = "0.1.0"
 edition = "2024"
+authors = ["kanha"]
+description = "A simple task manager CLI with TUI and shell integration"
+repository = "https://github.com/ROXYTINA/Tracker.git"
+license = "MIT"
+readme = "README.md"
+
+[package.metadata.wix]
+upgrade-guid = "12BAA7AD-65C3-427F-90C0-7721604337A7"
+path-guid = "76AA8F60-7E53-429B-B715-3813A95B6990"
+license = false
+eula = false
 
 [dependencies]
 clap = { version = "4.5", features = ["derive"] }
@@ -14,14 +25,22 @@ chrono = { version = "0.4", features = ["serde"] }
 colored = "2.1"
 notify = "8.2.0"
 notify-rust = "4.18.0"
+sysinfo = "0.30"
+windows-service = "0.8.1"
+service-manager = "0.11.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-appender = "0.2"
 
 [dev-dependencies]
 assert_cmd = "2.0"
 tempfile = "3.10"
 predicates = "3.1"
 
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
 
-[[bin]]
-name = "test-greet"
-path = "src/test_clap.rs"
+
 

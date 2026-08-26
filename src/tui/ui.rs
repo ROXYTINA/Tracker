@@ -1,6 +1,6 @@
 use crate::task::{Priority, Status};
 use crate::tui::app::{App, InputMode};
-use chrono::Local;
+use chrono::{Local, Utc};
 use ratatui::{
     Frame,
     layout::{Constraint, Direction, Layout},
@@ -8,7 +8,9 @@ use ratatui::{
     text::{Line, Span},
     widgets::{Block, Borders, Clear, List, ListItem, ListState, Paragraph},
 };
+use ratatui::style::Stylize;
 
+//render
 pub fn render(app: &mut App, f: &mut Frame) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
@@ -21,11 +23,13 @@ pub fn render(app: &mut App, f: &mut Frame) {
 
     // Title / Header
     let title = Paragraph::new(format!(
-        "TaskTrack - Total Tasks: {}",
-        app.store.tasks.len()
+        "TaskTrack - Total Tasks: {} | Time: {}",
+        app.store.tasks.len(),
+        Local::now().format("%H:%M:%S")
     ))
-    .block(Block::default().borders(Borders::ALL).title("Info"));
+    .block(Block::default().borders(Borders::ALL).title("Info").fg(Color::Red));
     f.render_widget(title, chunks[0]);
+
 
     // Task List
     let items: Vec<ListItem> = app
@@ -42,16 +46,35 @@ pub fn render(app: &mut App, f: &mut Frame) {
                 Style::default()
             };
 
-            let status_symbol = match task.status {
-                Status::Todo => "○",
-                Status::InProgress => "→",
-                Status::Done => "✓",
+            let now = Utc::now();
+            let is_overdue = if let Some(due) = task.due_date {
+                // Buffer of 1 second to avoid flickering if needed, but here we want exact
+                let overdue = now >= due && !matches!(task.status, Status::Done) && !matches!(task.status, Status::Passed);
+                overdue
+            } else {
+                false
             };
 
-            let status_color = match task.status {
-                Status::Todo => Color::White,
-                Status::InProgress => Color::Yellow,
-                Status::Done => Color::Green,
+            let status_symbol = if is_overdue {
+                "!!"
+            } else {
+                match task.status {
+                    Status::Todo => "○",
+                    Status::InProgress => "→",
+                    Status::Done => "✓",
+                    Status::Passed => "✗",
+                }
+            };
+
+            let status_color = if is_overdue {
+                Color::LightRed
+            } else {
+                match task.status {
+                    Status::Todo => Color::White,
+                    Status::InProgress => Color::Yellow,
+                    Status::Done => Color::Green,
+                    Status::Passed => Color::Red,
+                }
             };
 
             let priority_color = match task.priority {
@@ -72,7 +95,11 @@ pub fn render(app: &mut App, f: &mut Frame) {
                 Span::styled(task.title.clone(), style),
                 Span::raw(" ("),
                 Span::styled(
-                    format!("{:?}", task.status).to_uppercase(),
+                    if is_overdue {
+                        "OVERDUE".to_string()
+                    } else {
+                        format!("{:?}", task.status).to_uppercase()
+                    },
                     Style::default().fg(status_color),
                 ),
                 Span::raw(") [P: "),
@@ -99,7 +126,7 @@ pub fn render(app: &mut App, f: &mut Frame) {
     state.select(Some(app.selected_index));
 
     let list = List::new(items)
-        .block(Block::default().borders(Borders::ALL).title("Tasks"))
+        .block(Block::default().borders(Borders::ALL).fg(Color::Yellow).title("Tasks"))
         .highlight_style(Style::default().bg(Color::DarkGray));
 
     f.render_stateful_widget(list, chunks[1], &mut state);
@@ -107,16 +134,22 @@ pub fn render(app: &mut App, f: &mut Frame) {
     // Footer / Controls
     let footer_text = match app.input_mode {
         InputMode::Normal => {
-            "↑↓/kj: Nav | Enter: Done | s: Start | a: Add | e: Edit | t: Time | d: Del | h: Help | q: Quit"
+            "↑/↓: Nav | Enter: Done | [s] Start | [p] Pass | [a] Add | [e] Edit | [t] Time | [d] Del | [h] Help | [q] Quit"
         }
+
         InputMode::Adding => "Adding Task: Enter to Save | Esc to Cancel",
+
         InputMode::EditingTitle => "Editing Title: Enter to Save | Esc to Cancel",
+
         InputMode::EditingDueDate => "Setting Due Date (+2h, +1d, ISO8601): Enter to Save | Esc to Cancel",
+
         InputMode::Help => "Press any key to close help",
     };
+
     let footer =
-        Paragraph::new(footer_text).block(Block::default().borders(Borders::ALL).title("Controls"));
+        Paragraph::new(footer_text).block(Block::default().borders(Borders::ALL).fg(Color::Cyan).title("Controls"));
     f.render_widget(footer, chunks[2]);
+
 
     // Input Pop-up
     match app.input_mode {

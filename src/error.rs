@@ -13,4 +13,7 @@ pub enum AppError {
 
     #[error("invalid operation: {0}")]
     InvalidOperation(String),
+
+    #[error("error: {0}")]
+    Other(String),
 }
