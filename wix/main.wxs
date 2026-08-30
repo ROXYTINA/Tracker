@@ -126,9 +126,34 @@
                                 Name='tracker.exe'
                                 DiskId='1'
                                 Source='$(var.CargoTargetBinDir)\tracker.exe'
-                                KeyPath='yes'/>
+                                KeyPath='yes'>
+                                <Shortcut Id="StartMenuShortcut" Directory="ProgramMenuDir" Name="Tracker" WorkingDirectory="APPLICATIONFOLDER" Advertise="yes" />
+                            </File>
+                            <ServiceInstall
+                                Id="ServiceInstaller"
+                                Type="ownProcess"
+                                Name="tracker"
+                                DisplayName="Tracker Background Monitor"
+                                Description="Monitors tasks and sends notifications for due dates."
+                                Start="auto"
+                                Account="LocalSystem"
+                                ErrorControl="normal"
+                                Arguments="daemon">
+                                <ServiceConfig DelayedAutoStart="yes" OnInstall="yes" OnReinstall="yes" />
+                            </ServiceInstall>
+                            <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="tracker" Wait="yes" />
                         </Component>
                     </Directory>
+                </Directory>
+            </Directory>
+            <Directory Id="ProgramMenuFolder" Name="Programs">
+                <Directory Id="ProgramMenuDir" Name="Tracker">
+                    <Component Id="ProgramMenuDir" Guid="*">
+                        <RemoveFolder Id="ProgramMenuDir" On="uninstall" />
+                        <RegistryValue Root="HKCU" Key="Software\kanha\tracker" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+                        <!-- Register AppUserModelID for Toast Notifications -->
+                        <RegistryValue Root="HKCU" Key="Software\Classes\AppUserModelId\com.kanha.tracker" Name="DisplayName" Type="string" Value="Tracker" />
+                    </Component>
                 </Directory>
             </Directory>
         </Directory>
@@ -150,6 +175,7 @@
             <!--<ComponentRef Id='License'/>-->
 
             <ComponentRef Id='binary0'/>
+            <ComponentRef Id='ProgramMenuDir'/>
 
             <Feature
                 Id='Environment'

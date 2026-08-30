@@ -103,6 +103,8 @@ pub enum Commands {
         #[command(subcommand)]
         action: ServiceAction,
     },
+    /// Check the status of the background daemon/service
+    Status,
 }
 
 #[derive(Subcommand, Debug, Clone)]

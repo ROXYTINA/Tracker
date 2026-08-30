@@ -8,10 +8,9 @@ pub fn notify(title: &str, message: &str) {
 
     #[cfg(windows)]
     {
-        // On Windows, notifications need an App ID. If we're not installed, 
-        // we use a generic one or none, but notify-rust prefers one.
-        // Let's use a more standard one or try without it if it fails.
-        notification.app_id("Windows.SystemToast.Default");
+        // On Windows, notifications need an App ID.
+        // We use a consistent one that matches the installer's registration.
+        notification.app_id("com.kanha.tracker");
     }
 
     let _ = notification.show();

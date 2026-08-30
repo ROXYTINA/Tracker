@@ -14,6 +14,18 @@ path-guid = "76AA8F60-7E53-429B-B715-3813A95B6990"
 license = false
 eula = false
 
+[package.metadata.packager]
+before-packaging-command = "cargo build --release"
+resources = [
+    "tasks.json",
+    "logs/"
+]
+formats = ["nsis", "wix"]
+
+[package.metadata.packager.windows]
+# NSIS specific configuration if needed, or MSI
+# For now, default formats as requested.
+
 [dependencies]
 clap = { version = "4.5", features = ["derive"] }
 ratatui = "0.29"

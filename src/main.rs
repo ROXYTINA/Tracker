@@ -46,7 +46,7 @@ fn run_service() -> Result<(), AppError> {
             }
         };
 
-        let status_handle = service_control_handler::register("com.example.tracker", event_handler)?;
+        let status_handle = service_control_handler::register("tracker", event_handler)?;
 
         status_handle.set_service_status(ServiceStatus {
             service_type: ServiceType::OWN_PROCESS,
@@ -95,7 +95,7 @@ fn run_service() -> Result<(), AppError> {
         Ok(())
     }
 
-    service_dispatcher::start("com.example.tracker", ffi_service_main)
+    service_dispatcher::start("tracker", ffi_service_main)
         .map_err(|e| {
             tracing::error!("Failed to start service dispatcher: {}", e);
             AppError::Other(format!("Failed to start service dispatcher: {}", e))
@@ -323,6 +323,31 @@ fn main() -> Result<(), AppError> {
                 println!("Service stopped successfully.");
             }
         },
+        Commands::Status => {
+            #[cfg(windows)]
+            {
+                use sysinfo::System;
+                let s = System::new_all();
+                let current_pid = sysinfo::get_current_pid().unwrap();
+                let mut found = false;
+                
+                // Check for background process
+                for (pid, process) in s.processes() {
+                    if process.name() == "tracker.exe" && *pid != current_pid {
+                        println!("Background daemon is running (PID: {}).", pid);
+                        found = true;
+                    }
+                }
+
+                if !found {
+                    println!("No background daemon is running.");
+                }
+            }
+            #[cfg(not(windows))]
+            {
+                println!("Status command not fully implemented for this platform.");
+            }
+        }
         Commands::Shell => {
             loop {
                 print!("> ");
